@@ -19,6 +19,13 @@ def on_message(message):
     cmd = message_ar[0];
     args = message_ar.slice(1);
     argresult = args.join(' ');
+    prefix = '\\'
+
+    if cmd == prefix + "ping":
+        message.reply("pong");
+
+    if cmd == prefix + "warn":
+        message.reply("ciao");
 
 
-client.run(token)
+client.run(token);
