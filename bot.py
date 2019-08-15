@@ -1,21 +1,24 @@
 import discord
 
-def readToken():
+
+def read_token():
     with open("token.txt", "r") as f:
         lines = f.readlines()
         return lines[0].strip()
 
-token = readToken()
+
+token = read_token()
+
 
 client = discord.Client()
 
+
 @client.event
 def on_message(message):
-    messageAr = message.content.split(" ");
-    cmd = messageAr[0];
-    args = messageAr.slice(1);
+    message_ar = message.content.split(" ");
+    cmd = message_ar[0];
+    args = message_ar.slice(1);
     argresult = args.join(' ');
-
 
 
 client.run(token)
