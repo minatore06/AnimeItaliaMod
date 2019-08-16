@@ -25,6 +25,16 @@ async def on_message(message):
         await message.channel.send("pong");
 
     if cmd == prefix + "warn":
+        try:
+            with open("warn.txt") as f:
+                lines = f.readlines()
+
+            last_line = lines[len(lines)-1]
+            id = int(last_line[19:23])+1
+            print(id)
+        except IndexError:
+            id = 1111;
+
         if discord.utils.find(lambda r: r.name == 'Staff', message.guild.roles) not in message.author.roles:
             await message.channel.send("Solo lo staff può eseguire questo comando")
             return;
@@ -47,9 +57,39 @@ async def on_message(message):
             return;
 
         with open("warn.txt", "a") as f:
-            f.write(str(target)+" "+motivo+"\n")
+            f.write(str(target)+" "+str(id)+": "+motivo+"\n")
 
         await message.channel.send("Warn loggato")
 
+
+    elif cmd == prefix + "warnings":
+        if discord.utils.find(lambda r: r.name == 'Staff', message.guild.roles) not in message.author.roles:
+            await message.channel.send("Solo lo staff può eseguire questo comando")
+            return;
+
+        try:
+            target = message.mentions[0].id;
+        except IndexError:
+            try:
+                target = args[0];
+                if len(target) != 18:
+                    await message.channel.send("ID non valido")
+                    return;
+            except IndexError:
+                await message.channel.send("Devi taggare qualcuno")
+                return;
+
+        warnings = []
+        f = open("warn.txt", "r")
+        for line in f:
+            if str(target) in line:
+                warnings.append(line[18:len(line)])
+        f.close();
+
+        embed = discord.Embed(
+            description=''.join(warnings),
+            color=0x00ff00)
+        embed.set_author(name = "Warnings di " + str(message.mentions[0]), icon_url=message.mentions[0].avatar_url)
+        await message.channel.send(content=None, embed=embed)
 
 client.run(token);
