@@ -19,12 +19,16 @@ async def on_message(message):
     cmd = message_ar[0];
     args = message_ar[1:len(message_ar)];
     argresult = ' '.join(args);
-    prefix = '\\'
+    prefix = '/'
 
-    if cmd == prefix + "ping":
+    if cmd == prefix + "help":
+        embed = discord.Embed(title = "Elenco comandi", description = prefix+"ping: pong\n"+prefix+"warn(@utente o id) (motivo): warna un utente (accessibile solo allo staff)\n"+prefix+"warnings (@utente o id): visualizza i warn di un utente\n"+prefix+"delwarn (id warn): elimina un warn tramite id (accessibile solo ai mod)", color = 0xff00ff)
+        await message.channel.send(content=None, embed=embed)
+
+    elif cmd == prefix + "ping":
         await message.channel.send("pong");
 
-    if cmd == prefix + "warn":
+    elif cmd == prefix + "warn":
         try:
             with open("warn.txt") as f:
                 lines = f.readlines()
@@ -88,11 +92,19 @@ async def on_message(message):
 
         embed = discord.Embed(
             description=''.join(warnings),
-            color=0x00ff00)
+            color=0xcf672d)
         embed.set_author(name = "Warnings di " + str(message.mentions[0]), icon_url=message.mentions[0].avatar_url)
         await message.channel.send(content=None, embed=embed)
 
     elif cmd == prefix + "delwarn":
+        if discord.utils.find(lambda r: r.name == 'Staff', message.guild.roles) not in message.author.roles:
+            await message.channel.send("Solo lo staff può eseguire questo comando")
+            return;
+
+        if discord.utils.find(lambda r: r.name == '✔️Helper✔️', message.guild.roles) in message.author.roles:
+            await message.channel.send("Gli helper non possono usare questo comando")
+            return;
+
         id = argresult
         if len(id) < 4 or len(id) > 4:
             await message.channel.send("ID non valido")
