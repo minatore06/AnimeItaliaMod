@@ -25,9 +25,10 @@ async def on_message(message):
         await message.channel.send("pong");
 
     if cmd == prefix + "warn":
-        if "594960791363518465" not in message.author.roles:
-            await message.channel.send("Non hai il permesso per usare questo comando")
+        if discord.utils.find(lambda r: r.name == 'Staff', message.guild.roles) not in message.author.roles:
+            await message.channel.send("Solo lo staff può eseguire questo comando")
             return;
+
         try:
             target = message.mentions[0].id;
         except IndexError:
