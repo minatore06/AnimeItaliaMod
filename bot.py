@@ -45,6 +45,8 @@ async def on_message(message):
 
         try:
             target = message.mentions[0].id;
+            if args[0] != message.mentions[0].mention:
+                raise IndexError
         except IndexError:
             try:
                 target = args[0];
@@ -52,7 +54,7 @@ async def on_message(message):
                     await message.channel.send("ID non valido")
                     return;
             except IndexError:
-                await message.channel.send("Devi taggare qualcuno")
+                await message.channel.send("Uso del comando: `/warn (@utente/ID) (regola violata)`")
                 return;
 
         motivo = ' '.join(message_ar[2:len(message_ar)])
@@ -60,10 +62,17 @@ async def on_message(message):
             await message.channel.send("Devi specificare un motivo")
             return;
 
+        try:
+            await client.get_user(int(target)).send("Sei stato warnato su AnimeItalia per: " + motivo)
+        except discord.errors.Forbidden:
+            await message.channel.send("L'utente ha bloccato il bot, per cui non è stato possibile avvertirlo")
+        except:
+            await message.channel.send("Non è stato possibile avvertire l'utente")
+
         with open("warn.txt", "a") as f:
             f.write(str(target)+" "+str(id)+": "+motivo+"\n")
 
-        await message.channel.send("Warn loggato")
+        await message.channel.send("Warn loggato ed utente segnalato")
 
 
     elif cmd == prefix + "warnings":
@@ -86,14 +95,17 @@ async def on_message(message):
         warnings = []
         f = open("warn.txt", "r")
         for line in f:
-            if str(target) in line:
+            if str(target) in line[0:18]:
                 warnings.append(line[18:len(line)])
         f.close();
 
         embed = discord.Embed(
             description=''.join(warnings),
             color=0xcf672d)
-        embed.set_author(name = "Warnings di " + str(message.mentions[0]), icon_url=message.mentions[0].avatar_url)
+        embed.set_author(
+            name="Warnings di " + client.get_user(int(target)).name+"#"+str(client.get_user(int(target)).discriminator),
+            icon_url=client.get_user(int(target)).avatar_url)
+        embed.set_footer(text=target)
         await message.channel.send(content=None, embed=embed)
 
     elif cmd == prefix + "delwarn":
