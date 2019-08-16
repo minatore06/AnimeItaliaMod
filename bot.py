@@ -92,4 +92,20 @@ async def on_message(message):
         embed.set_author(name = "Warnings di " + str(message.mentions[0]), icon_url=message.mentions[0].avatar_url)
         await message.channel.send(content=None, embed=embed)
 
+    elif cmd == prefix + "delwarn":
+        id = argresult
+        if len(id) < 4 or len(id) > 4:
+            await message.channel.send("ID non valido")
+            return;
+
+        with open("warn.txt", "r") as f:
+            lines = f.readlines()
+        with open("warn.txt", "w") as f:
+            for line in lines:
+                if line.strip("\n")[19:23] != str(id):
+                    f.write(line);
+
+        await message.channel.send("Warn cancellato")
+
+
 client.run(token);
