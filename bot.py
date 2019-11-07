@@ -111,6 +111,8 @@ async def on_message(message):
             except IndexError:
                 await message.channel.send("Uso del comando: `/warn (@utente/ID) (regola violata)`")
                 return;
+        if message.guild.get_member(target).bot
+            await message.channel.send("Non è possibile warnare un bot")
 
 #   presa del motivo del warn
         motivo = ' '.join(message_ar[2:len(message_ar)])
