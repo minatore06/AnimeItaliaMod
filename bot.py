@@ -114,34 +114,30 @@ async def on_message(message):
                     await message.channel.send("`ID non valido`")
                     return
             except IndexError:
-                if not args[0]:
-                    with open("warn.json", "r") as f:
-                        warns = json.load(f)
+                with open("warn.json", "r") as f:
+                    warns = json.load(f)
 
-                #   embed di output
-                    embed = discord.Embed(
-                        color=0xcf672d,
-                        timestamp=datetime.datetime.now()
-                    )
-                    embed.set_author(
-                        name="Warnings nel server",
-                        icon_url="https://vignette.wikia.nocookie.net/bakemonogatari1645/images/b/b9/Shinobu.png/revision/latest/top-crop/width/360/height/450?cb=20161221045011"
-                    )
-                    embed.set_footer(
-                        text="Steins;Gate",
-                        icon_url=message.guild.icon_url
-                    )
+            #   embed di output
+                embed = discord.Embed(
+                    color=0xcf672d,
+                    timestamp=datetime.datetime.now()
+                )
+                embed.set_author(
+                    name="Warnings nel server",
+                    icon_url="https://vignette.wikia.nocookie.net/bakemonogatari1645/images/b/b9/Shinobu.png/revision/latest/top-crop/width/360/height/450?cb=20161221045011"
+                )
+                embed.set_footer(
+                    text="Steins;Gate",
+                    icon_url=message.guild.icon_url
+                )
 
-                    for line in warns['warning']:
-                        embed.add_field(
-                            name="`#" + id[list(warns['warning'].values()).index(line)] + "` Mod: " + line[
-                                'moderatore'] + " | data: " + line["data"], value=line['motivo'], inline=False)
+                for line in warns['warning']:
+                    embed.add_field(
+                        name="`#" + id[list(warns['warning'].values()).index(line)] + "` Mod: " + line[
+                            'moderatore'] + " | data: " + line["data"], value=line['motivo'], inline=False)
 
-                    await message.channel.send(content=None, embed=embed)
-                    return
-                else:
-                    await message.channel.send("`Devi taggare qualcuno`")
-                    return
+                await message.channel.send(content=None, embed=embed)
+                return
 
         warnings = []
         with open("warn.json", "r") as f:
