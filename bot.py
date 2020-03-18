@@ -131,6 +131,7 @@ async def on_message(message):
                     icon_url=message.guild.icon_url
                 )
 
+                id = list(warns['warning'].keys())
                 for line in warns['warning']:
                     embed.add_field(
                         name="`#" + id[list(warns['warning'].values()).index(line)] + "` Mod: " + line[
