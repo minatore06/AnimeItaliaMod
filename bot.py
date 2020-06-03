@@ -1,6 +1,7 @@
 import discord
 import json
 import datetime
+import re
 
 
 def read_token():
@@ -29,11 +30,15 @@ async def on_message(message):
     prefix = '/'
 
     if cmd == prefix + "help":
-        embed = discord.Embed(title="Elenco comandi", description=prefix+"ping: pong\n"+prefix+"warn(@utente o id) (motivo): warna un utente (accessibile solo allo staff)\n"+prefix+"warnings (@utente o id): visualizza i warn di un utente\n"+prefix+"delwarn (id warn): elimina un warn tramite id (accessibile solo ai mod)", color=0xff00ff)
+        embed = discord.Embed(title="Elenco comandi", description=prefix+"ping: pong\n"+prefix+"warn(@utente o id) (motivo): warna un utente (accessibile solo allo staff)\n"+prefix+"warnings (@utente o id): visualizza i warn di un utente(se non si specifica un utente mostra tutti i warn)\n"+prefix+"delwarn (id warn): elimina un warn tramite id (accessibile solo ai mod)", color=0xff00ff)
         await message.channel.send(content=None, embed=embed)
 
     elif cmd == prefix + "ping":
         await message.channel.send("pong")
+
+    elif re.search(("discord.gg/" or "discord.com/invite/" or "discordapp.com/invite/")+"\w{7}", message.content):
+        await message.delete()
+        await message.channel.send("Yeah "+message.author.mention+", non mandare inviti")
 
 #   comando per assegnare warn
     elif cmd == prefix + "warn":  # /warn (@utente/id) (motivo)
@@ -117,6 +122,9 @@ async def on_message(message):
                 with open("warn.json", "r") as f:
                     warns = json.load(f)
 
+                warnings = []
+                for w in list(warns['warning'].keys()):
+                    warnings.append(warns['warning'][w])
             #   embed di output
                 embed = discord.Embed(
                     color=0xcf672d,
@@ -132,10 +140,10 @@ async def on_message(message):
                 )
 
                 id = list(warns['warning'].keys())
-                for line in warns['warning']:
+
+                for line in warnings:
                     embed.add_field(
-                        name="`#" + id[list(warns['warning'].values()).index(line)] + "` Mod: " + line[
-                            'moderatore'] + " | data: " + line["data"], value=line['motivo'], inline=False)
+                        name="`#" + id[list(warns['warning'].values()).index(line)] + "` Mod: " + line['moderatore'] + " | data: " + line["data"], value=line['motivo'], inline=False)
 
                 await message.channel.send(content=None, embed=embed)
                 return
