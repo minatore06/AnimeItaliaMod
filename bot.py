@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 import json
 import datetime
@@ -10,6 +12,30 @@ def read_token():
         return lines[0].strip()
 
 
+def check(author):
+    def inner_check(message):
+        return message.author == author
+
+
+async def banDash(target, motivo):
+    try:
+        await client.get_guild(681624606976901211).ban(target, reason=motivo, delete_message_days=1)
+    except:
+        return False
+    return True
+
+
+async def kickDash(target, motivo):
+    try:
+        await client.get_guild(681624606976901211).ban(target, reason=motivo)
+    except:
+        return False
+    return True
+
+
+async def warnDash(target, motivo):
+    return
+
 token = read_token()
 
 
@@ -19,6 +45,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print("Ready")
+    await client.get_channel(722767918936489995).fetch_message(722776120897831072)
 
 
 @client.event
@@ -210,5 +237,67 @@ async def on_message(message):
             await message.channel.send("`Warn cancellato`")
         else:
             await message.channel.send("`Warn non trovato`")
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if reaction.message.id == 722776120897831072 and reaction.emoji.id in [722777019175403543, 687240294890209302, 687235747484270624]:
+        reaction.message.channel.send("Inviare l'id dell'utente su cui deve cadere il martello della giustizia", 20000)
+        try:
+            msg = await client.wait_for('message', check=check(user), timeout=30.0)
+        except asyncio.TimeoutError:
+            reaction.message.channel.send("'Tempo scaduto'\nI said with a posed look", 10000)
+            return
+        target = client.get_user(msg.content)
+        if target is None:
+            reaction.message.channel.send("'Utente non trovato'\nI said with a posed look", 10000)
+            return
+
+        reaction.message.channel.send("Inviare la motivazione dell'intervento", 20000)
+        try:
+            msg = await client.wait_for('message', check=check(user), timeout=30.0)
+        except asyncio.TimeoutError:
+            reaction.message.channel.send("'Tempo scaduto'\nI said with a posed look", 10000)
+            return
+        motivo = msg.content
+
+        permissionlevel = 0
+        role = discord.utils.find(lambda r: r.name == 'Admin', reaction.message.channel.guild.roles)
+        if role in user.roles:
+            permissionlevel = 5
+        else:
+            role = discord.utils.find(lambda r: r.name == 'Supervisore', reaction.message.channel.guild.roles)
+            if role in user.roles:
+                permissionlevel = 4
+            else:
+                role = discord.utils.find(lambda r: r.name == 'Moderatore', reaction.message.channel.guild.roles)
+                if role in user.roles:
+                    permissionlevel = 3
+                else:
+                    role = discord.utils.find(lambda r: r.name == 'Helper', reaction.message.channel.guild.roles)
+                    if role in user.roles:
+                        permissionlevel = 2
+
+        if reaction.emoji.id == 722777019175403543:  #ban
+            if permissionlevel < 3:
+                reaction.message.channel.send("'Non hai il permesso per eseguire questa funzione'\nI said with a posed look", 10000)
+                return
+            if await banDash(target, motivo):
+                reaction.message.channel.send("'Unlimited Rulebook: versione ban\nL'utente è stato colpito con tutta la forza e ridotto in pezzettini", 20000)
+            else:
+                reaction.message.channel.send("Operazione fallita, oni no onii-chan fuggi")
+        elif reaction.emoji.id == 687240294890209302:  #kick
+            if permissionlevel < 2:
+                reaction.message.channel.send("'Non hai il permesso per eseguire questa funzione'\nI said with a posed look", 10000)
+                return
+            if await kickDash(target, motivo):
+                reaction.message.channel.send("'Unlimited Rulebook: versione kick\nL'utente è stato colpito e stordito", 20000)
+            else:
+                reaction.message.channel.send("Operazione fallita, oni no onii-chan fuggi")
+        elif reaction.emoji.id == 687235747484270624:  #warn
+            if permissionlevel < 2:
+                reaction.message.channel.send("'Non hai il permesso per eseguire questa funzione'\nI said with a posed look", 10000)
+                return
+            await warnDash(target, motivo)
+            reaction.message.channel.send("`Messaggio di servizio dal programmatore` Non ho voglia di creare questa funzione ora, arrangiatevi", 20000)
 
 client.run(token)
