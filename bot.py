@@ -61,19 +61,19 @@ async def on_message(message):
         permissionlevel = 15
     else:
         role = discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
-        if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+        if role in message.guild.get_member(message.author.id).roles:
             permissionlevel = 5
         else:
             role = discord.utils.find(lambda r: r.name == 'Supervisore', message.guild.roles)
-            if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+            if role in message.guild.get_member(message.author.id).roles:
                 permissionlevel = 4
             else:
                 role = discord.utils.find(lambda r: r.name == 'Moderatore', message.guild.roles)
-                if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+                if role in message.guild.get_member(message.author.id).roles:
                     permissionlevel = 3
                 else:
                     role = discord.utils.find(lambda r: r.name == 'Helper', message.guild.roles)
-                    if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+                    if role in message.guild.get_member(message.author.id).roles:
                         permissionlevel = 2
 
     if cmd == prefix + "help":
