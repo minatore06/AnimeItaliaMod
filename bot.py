@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 import discord
 import json
@@ -60,20 +61,21 @@ async def on_message(message):
     if message.author.id == 143318398548443136:
         permissionlevel = 15
     else:
-        role = await discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
-        if role in message.guild.get_member(message.author.id).roles:
+        role_a = discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
+        role_s = discord.utils.find(lambda r: r.name == 'Supervisore', message.guild.roles)
+        role_m = discord.utils.find(lambda r: r.name == 'Moderatore', message.guild.roles)
+        role_h = discord.utils.find(lambda r: r.name == 'Helper', message.guild.roles)
+        await time.sleep(0.1)
+        if role_a in message.guild.get_member(message.author.id).roles:
             permissionlevel = 5
         else:
-            role = discord.utils.find(lambda r: r.name == 'Supervisore', message.guild.roles)
-            if role in message.guild.get_member(message.author.id).roles:
+            if role_s in message.guild.get_member(message.author.id).roles:
                 permissionlevel = 4
             else:
-                role = discord.utils.find(lambda r: r.name == 'Moderatore', message.guild.roles)
-                if role in message.guild.get_member(message.author.id).roles:
+                if role_m in message.guild.get_member(message.author.id).roles:
                     permissionlevel = 3
                 else:
-                    role = discord.utils.find(lambda r: r.name == 'Helper', message.guild.roles)
-                    if role in message.guild.get_member(message.author.id).roles:
+                    if role_h in message.guild.get_member(message.author.id).roles:
                         permissionlevel = 2
 
     if cmd == prefix + "help":
@@ -291,20 +293,21 @@ async def on_raw_reaction_add(payload):
         if user.id == 143318398548443136:
             permissionlevel = 15
         else:
-            role = await discord.utils.find(lambda r: r.name == 'Admin', canale.guild.roles)
-            if role in client.get_guild(681624606976901211).get_member(user.id).roles:
+            role_a = await discord.utils.find(lambda r: r.name == 'Admin', canale.guild.roles)
+            role_s = discord.utils.find(lambda r: r.name == 'Supervisore', canale.guild.roles)
+            role_m = discord.utils.find(lambda r: r.name == 'Moderatore', canale.guild.roles)
+            role_h = discord.utils.find(lambda r: r.name == 'Helper', canale.guild.roles)
+            await time.sleep(0.1)
+            if role_a in client.get_guild(681624606976901211).get_member(user.id).roles:
                 permissionlevel = 5
             else:
-                role = discord.utils.find(lambda r: r.name == 'Supervisore', canale.guild.roles)
-                if role in client.get_guild(681624606976901211).get_member(user.id).roles:
+                if role_s in client.get_guild(681624606976901211).get_member(user.id).roles:
                     permissionlevel = 4
                 else:
-                    role = discord.utils.find(lambda r: r.name == 'Moderatore', canale.guild.roles)
-                    if role in client.get_guild(681624606976901211).get_member(user.id).roles:
+                    if role_m in client.get_guild(681624606976901211).get_member(user.id).roles:
                         permissionlevel = 3
                     else:
-                        role = discord.utils.find(lambda r: r.name == 'Helper', canale.guild.roles)
-                        if role in client.get_guild(681624606976901211).get_member(user.id).roles:
+                        if role_h in client.get_guild(681624606976901211).get_member(user.id).roles:
                             permissionlevel = 2
 
         if payload.emoji.id == 722777019175403543:  #ban
