@@ -56,6 +56,26 @@ async def on_message(message):
     argresult = ' '.join(args)
     prefix = '/'
 
+    permissionlevel = 0
+    if message.author.id == 143318398548443136:
+        permissionlevel = 15
+    else:
+        role = discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
+        if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+            permissionlevel = 5
+        else:
+            role = discord.utils.find(lambda r: r.name == 'Supervisore', message.guild.roles)
+            if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+                permissionlevel = 4
+            else:
+                role = discord.utils.find(lambda r: r.name == 'Moderatore', message.guild.roles)
+                if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+                    permissionlevel = 3
+                else:
+                    role = discord.utils.find(lambda r: r.name == 'Helper', message.guild.roles)
+                    if role in client.get_guild(681624606976901211).get_member(message.author.id).roles:
+                        permissionlevel = 2
+
     if cmd == prefix + "help":
         embed = discord.Embed(title="Elenco comandi", description=prefix+"ping: pong\n"+prefix+"warn(@utente o id) (motivo): warna un utente (accessibile solo allo staff)\n"+prefix+"warnings (@utente o id): visualizza i warn di un utente(se non si specifica un utente mostra tutti i warn)\n"+prefix+"delwarn (id warn): elimina un warn tramite id (accessibile solo ai mod)", color=0xff00ff)
         await message.channel.send(content=None, embed=embed)
@@ -64,8 +84,12 @@ async def on_message(message):
         await message.channel.send("pong")
 
     elif re.search(("discord.gg/" or "discord.com/invite/" or "discordapp.com/invite/")+"\w{7}", message.content):
+        if permissionlevel > 3:
+            if permissionlevel == 4:
+                await message.channel.send("Puraido sei contento?", timeout=10.0)
+            return
         await message.delete()
-        await message.channel.send("Yeah "+message.author.mention+", non mandare inviti")
+        await message.channel.send("Yeah "+message.author.mention+", non mandare inviti", timeout=15.0)
 
 #   comando per assegnare warn
     elif cmd == prefix + "warn":  # /warn (@utente/id) (motivo)
