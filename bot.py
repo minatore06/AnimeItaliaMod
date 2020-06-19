@@ -86,10 +86,10 @@ async def on_message(message):
     elif re.search(("discord.gg/" or "discord.com/invite/" or "discordapp.com/invite/")+"\w{7}", message.content):
         if permissionlevel > 3:
             if permissionlevel == 4:
-                await message.channel.send("Puraido sei contento?", timeout=10.0)
+                await message.channel.send("Puraido sei contento?", delete_after=10.0)
             return
         await message.delete()
-        await message.channel.send("Yeah "+message.author.mention+", non mandare inviti", timeout=15.0)
+        await message.channel.send("Yeah "+message.author.mention+", non mandare inviti", delete_after=15.0)
 
 #   comando per assegnare warn
     elif cmd == prefix + "warn":  # /warn (@utente/id) (motivo)
