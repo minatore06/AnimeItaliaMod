@@ -65,8 +65,8 @@ async def on_message(message):
         role_s = discord.utils.find(lambda r: r.name == 'Supervisore', message.guild.roles)
         role_m = discord.utils.find(lambda r: r.name == 'Moderatore', message.guild.roles)
         role_h = discord.utils.find(lambda r: r.name == 'Helper', message.guild.roles)
-        await asyncio.sleep(0.1)
-        if role_a in message.guild.get_member(message.author.id).roles:
+        await asyncio.sleep(0.3)
+        if role_a in (await message.guild.get_member(message.author.id)).roles:
             permissionlevel = 5
         else:
             if role_s in message.guild.get_member(message.author.id).roles:
@@ -297,7 +297,7 @@ async def on_raw_reaction_add(payload):
             role_s = discord.utils.find(lambda r: r.name == 'Supervisore', canale.guild.roles)
             role_m = discord.utils.find(lambda r: r.name == 'Moderatore', canale.guild.roles)
             role_h = discord.utils.find(lambda r: r.name == 'Helper', canale.guild.roles)
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.3)
             if role_a in client.get_guild(681624606976901211).get_member(user.id).roles:
                 permissionlevel = 5
             else:
