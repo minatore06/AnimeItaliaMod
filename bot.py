@@ -60,7 +60,7 @@ async def on_message(message):
     if message.author.id == 143318398548443136:
         permissionlevel = 15
     else:
-        role = discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
+        role = await discord.utils.find(lambda r: r.name == 'Admin', message.guild.roles)
         if role in message.guild.get_member(message.author.id).roles:
             permissionlevel = 5
         else:
@@ -291,7 +291,7 @@ async def on_raw_reaction_add(payload):
         if user.id == 143318398548443136:
             permissionlevel = 15
         else:
-            role = discord.utils.find(lambda r: r.name == 'Admin', canale.guild.roles)
+            role = await discord.utils.find(lambda r: r.name == 'Admin', canale.guild.roles)
             if role in client.get_guild(681624606976901211).get_member(user.id).roles:
                 permissionlevel = 5
             else:
