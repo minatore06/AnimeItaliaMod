@@ -1,5 +1,6 @@
 import asyncio
 import time
+import speech_recognition as sr
 
 import discord
 import json
@@ -263,6 +264,13 @@ async def on_message(message):
             await message.channel.send("`Warn cancellato`")
         else:
             await message.channel.send("`Warn non trovato`")
+
+    elif cmd == prefix+"vocalModControl":
+        voiceCh = message.author.voice.channel
+        if voiceCh == None:
+            return
+        connection = voiceCh.connect(20, False)
+        recognizer_instance = sr.Recognizer()
 
 
 @client.event
